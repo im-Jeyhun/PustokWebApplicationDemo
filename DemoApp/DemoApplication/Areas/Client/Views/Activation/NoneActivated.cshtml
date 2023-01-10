@@ -1,0 +1,13 @@
+﻿@model User
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div>
+            <h1>Your current token expire time is up </h1>
+        </div>
+        <div class="">
+            <a asp-route="client-is-activated" asp-route-id="@Model.Id" target="_blank" class="btn btn-secondary">Send new token</a>
+        </div>
+    </div>
+   
+</div>
