@@ -33,7 +33,7 @@ namespace DemoApplication.Areas.Client.Controllers
 
             var now = DateTime.Now;
 
-            if(tokenInDb.TokenExpireDate != DateTime.Now)
+            if(tokenInDb.TokenExpireDate < DateTime.Now)
             {
                 _dataContext.Remove(tokenInDb);
                 await _dataContext.SaveChangesAsync();
@@ -83,7 +83,7 @@ namespace DemoApplication.Areas.Client.Controllers
 
             var activedToken = _dataContext.UserActivations.FirstOrDefault(u => u.UserId == user.Id);
 
-            if(activedToken.Token != null && activedToken.TokenExpireDate != DateTime.Now)
+            if(activedToken.Token != null && activedToken.TokenExpireDate < DateTime.Now)
             {
                 return RedirectToRoute("client-activated");
             }
