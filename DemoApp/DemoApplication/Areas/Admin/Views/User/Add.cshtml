@@ -1,0 +1,52 @@
+﻿@using DemoApplication.Areas.Admin.ViewModels.Role
+@using DemoApplication.Database.Models
+@model AddViewModel
+
+
+<main class="page-section inner-page-sec-padding-bottom">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-6 mb--30 mb-lg--0">
+                <!-- Login Form s-->
+                <form method="POST" asp-route="admin-user-add">
+                    <div class="login-form">
+                        <h4 class="login-title">New USer</h4>
+                        <p><span class="font-weight-bold">I am a new customer</span></p>
+                        <div class="row">
+                            <div class="col-12 mb--20">
+                                <label asp-for="FirstName">Name</label>
+                                <input asp-for="FirstName" class="mb-0 form-control" id="email" placeholder="Enter Your Name Here..">
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6 mb--20">
+                                <label asp-for="LastName">Last Name</label>
+                                <input asp-for="LastName" class="mb-0 form-control" id="email" placeholder="Enter Your Name Here..">
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="col-lg-6 mb--20">
+                                <label asp-for="Email">Email</label>
+                                <input asp-for="Email" class="mb-0 form-control" id="email" placeholder="Enter Your Name Here..">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                              <div class="col-lg-6 mb--20">
+                                <label asp-for="Password">Password</label>
+                                <input asp-for="Password" class="mb-0 form-control" id="email" placeholder="Enter Your Name Here..">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Roles</label>
+                                <select asp-for="RoleId" asp-items="@(new SelectList(Model.Roles, nameof(ItemViewModel.Id), nameof(ItemViewModel.Name)))" class="form-select">                
+                                    <option value="" selected>--- SELECT ---</option>
+                                </select>
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">Add User</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
