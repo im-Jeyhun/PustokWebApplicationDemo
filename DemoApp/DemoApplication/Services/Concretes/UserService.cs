@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using BC = BCrypt.Net.BCrypt;
+using DemoApplication.Contracts.Email;
 
 namespace DemoApplication.Services.Concretes
 {
@@ -60,6 +61,13 @@ namespace DemoApplication.Services.Concretes
         public string GetCurrentUserFullName()
         {
             return $"{CurrentUser.FirstName} {CurrentUser.LastName}";
+        }
+
+        public bool IsEmailConfirmed(string email)
+        {
+            var user = _dataContext.Users.FirstOrDefault(u => u.Email == email);
+
+            return user.IsEmailConfirmed == true;
         }
 
         public async Task<bool> CheckPasswordAsync(string? email, string? password)
@@ -112,7 +120,7 @@ namespace DemoApplication.Services.Concretes
 
             await CreteBasketProductsAsync();
             var token = await CreateUserActivation();
-            SendEmail();
+            SendEmail(token , user , CustomEmailTitles.Confirm);
 
             await _dataContext.SaveChangesAsync();
 
@@ -144,22 +152,6 @@ namespace DemoApplication.Services.Concretes
 
                 return userActivation.Token;
             }
-
-            void SendEmail()
-            {
-
-                var link = $"https://localhost:7026/activation/activated/{token}";
-
-                List<string> targetEmail = new List<string>();
-
-                targetEmail.Add(user.Email);
-
-                var title = "Your activation url";
-
-                var message = new Message(targetEmail, title, link);
-
-                _emailService.Send(message);
-            };
 
             async Task<Basket> CreateBasketAsync()
             {
@@ -198,6 +190,21 @@ namespace DemoApplication.Services.Concretes
                     }
                 }
             }
+        }
+
+        public void SendEmail<T>(T token, User user , string title)
+        {
+
+            var link = $"https://localhost:7026/activation/activated/{token}";
+
+            List<string> targetEmail = new List<string>();
+
+            targetEmail.Add(user.Email);
+
+
+            var message = new Message(targetEmail, title, link);
+
+            _emailService.Send(message);
         }
     }
 }

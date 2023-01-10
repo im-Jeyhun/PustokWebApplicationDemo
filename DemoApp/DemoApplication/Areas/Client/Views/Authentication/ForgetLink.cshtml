@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model User
 
 <section class="breadcrumb-section">
     <h2 class="sr-only">Site Breadcrumb</h2>
@@ -21,7 +21,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12">
-                <form method="POST" asp-route="client-auth-login">
+                <form method="POST" asp-route="client-auth-forget-link" asp-route-email="@Model.Email">
                     <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                     <div class="login-form">
                         <h4 class="login-title">Returning Customer</h4>
@@ -32,14 +32,9 @@
                                 <input asp-for="Email" class="mb-0 form-control" type="text" id="email1" placeholder="Enter you email address here...">
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
-                            <div class="col-12 mb--20">
-                                <label asp-for="Password">Password</label>
-                                <input asp-for="Password" class="mb-0 form-control" id="login-password" placeholder="Enter your password">
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
+                    
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-outlined">Login</button>
-                                <a asp-route="client-auth-forget-link" > Forget Password </a>
                             </div>
                         </div>
                     </div>

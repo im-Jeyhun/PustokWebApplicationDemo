@@ -33,7 +33,7 @@ namespace DemoApplication.Areas.Client.Controllers
 
             var now = DateTime.Now;
 
-            if(tokenInDb.TokenExpireDate < DateTime.Now)
+            if(tokenInDb.TokenExpireDate < DateTime.Now) // 12 1
             {
                 _dataContext.Remove(tokenInDb);
                 await _dataContext.SaveChangesAsync();
