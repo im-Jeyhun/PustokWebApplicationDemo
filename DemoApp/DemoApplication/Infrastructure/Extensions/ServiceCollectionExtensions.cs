@@ -1,4 +1,5 @@
-﻿using DemoApplication.Database;
+﻿using DemoApplication.BackgroundService;
+using DemoApplication.Database;
 using DemoApplication.Infrastructure.Configurations;
 using DemoApplication.Options;
 using DemoApplication.Services.Abstracts;
@@ -24,7 +25,9 @@ namespace DemoApplication.Infrastructure.Extensions
                 });
 
             services.AddHttpContextAccessor();
-            
+            services.AddHostedService<DeleteExpiredUpUsers>();
+
+
             services.ConfigureMvc();
 
             services.ConfigureDatabase(configuration);

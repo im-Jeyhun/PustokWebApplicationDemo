@@ -1,4 +1,5 @@
-﻿using DemoApplication.Database;
+﻿using DemoApplication.Contracts.Email;
+using DemoApplication.Database;
 using DemoApplication.Database.Models;
 using DemoApplication.Services.Abstracts;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,13 @@ namespace DemoApplication.Areas.Client.Controllers
 
         private readonly IEmailService _emailService;
 
-        public ActivationController(DataContext dataContext, IEmailService emailService)
+        private readonly IUserService _userService;
+
+        public ActivationController(DataContext dataContext, IEmailService emailService, IUserService userService)
         {
             _dataContext = dataContext;
             _emailService = emailService;
+            _userService = userService; 
         }
 
         [HttpGet("activated/{token}", Name = "client-activated")]
@@ -49,22 +53,6 @@ namespace DemoApplication.Areas.Client.Controllers
                 return RedirectToRoute("client-auth-login");
             }
 
-            //if (tokenInDb.TokenExpireDate != DateTime.Now)
-            //{
-            //    user.IsEmailConfirmed = true;
-
-            //    await _dataContext.SaveChangesAsync();
-
-            //    return RedirectToRoute("client-auth-login");
-            //}
-            //else if (tokenInDb.TokenExpireDate == DateTime.Now)
-            //{
-            //    _dataContext.Remove(tokenInDb);
-            //    await _dataContext.SaveChangesAsync();
-
-            //    return RedirectToRoute("client-none-activated", user.Id);
-            //}
-
             return RedirectToRoute("client-auth-register");
 
         }
@@ -89,7 +77,10 @@ namespace DemoApplication.Areas.Client.Controllers
             }
 
             var token = await CreateUserActivation();
-            SendEmail();
+
+            var contentLink = _userService.GenerateUrl<Guid>("activation", "activated", token);
+
+            _userService.SendEmail(user, CustomEmailTitles.Confirm, contentLink);
 
             await _dataContext.SaveChangesAsync();
 
@@ -109,21 +100,7 @@ namespace DemoApplication.Areas.Client.Controllers
                 return userActivation.Token;
             }
 
-            void SendEmail()
-            {
-
-                var link = $"https://localhost:7026/activation/activated/{token}";
-
-                List<string> targetEmail = new List<string>();
-
-                targetEmail.Add(user.Email);
-
-                var title = "Your activation url";
-
-                var message = new Message(targetEmail, title, link);
-
-                _emailService.Send(message);
-            };
+          
         }
 
 
