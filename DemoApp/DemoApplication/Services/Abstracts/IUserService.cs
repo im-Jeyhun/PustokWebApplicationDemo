@@ -17,7 +17,9 @@ namespace DemoApplication.Services.Abstracts
         Task CreateAsync(RegisterViewModel model);
         Task SignOutAsync();
 
-        void SendEmail<T>(T token, User user , string title);
+        public void SendEmail(User user, string title, string content);
+        public string GenerateUrl<T>(string controller, string action, T lastPath);
+
 
     }
 }

@@ -117,18 +117,29 @@ namespace DemoApplication.Controllers
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
             if(user == null)
             {
-                return NotFound();
+                ModelState.AddModelError(String.Empty, "Email  is not found");
+                GetView();
             }
 
             if (!_userService.IsEmailConfirmed(user.Email))
             {
                 ModelState.AddModelError(String.Empty, "Email  is not confirmed");
-                return View(user);
-            }
+                GetView();            }
 
-            _userService.SendEmail(user.Id, user , CustomEmailTitles.Reset);
+            var contentLink = _userService.GenerateUrl<Guid>("auth", "reset-password", user.Id);
+
+            _userService.SendEmail(user , CustomEmailTitles.Reset , contentLink);
 
             return Ok("Forget token is sended to email");
+
+            IActionResult GetView()
+            {
+                var model = new User
+                {
+                    Email = email,
+                };
+                return View(model);
+            }
         }
         [HttpGet("reset-password/{id}", Name = "client-auth-reset-password")]
         public async Task<IActionResult> ResetPassword(Guid Id)

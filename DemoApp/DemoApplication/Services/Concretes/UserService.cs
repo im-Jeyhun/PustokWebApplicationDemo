@@ -13,6 +13,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using BC = BCrypt.Net.BCrypt;
 using DemoApplication.Contracts.Email;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace DemoApplication.Services.Concretes
 {
@@ -120,7 +121,10 @@ namespace DemoApplication.Services.Concretes
 
             await CreteBasketProductsAsync();
             var token = await CreateUserActivation();
-            SendEmail(token , user , CustomEmailTitles.Confirm);
+
+            var contentLink = GenerateUrl<Guid>("activation", "activated", token);
+
+            SendEmail(user , CustomEmailTitles.Confirm , contentLink);
 
             await _dataContext.SaveChangesAsync();
 
@@ -192,19 +196,22 @@ namespace DemoApplication.Services.Concretes
             }
         }
 
-        public void SendEmail<T>(T token, User user , string title)
+        public void SendEmail(User user  , string title , string content)
         {
-
-            var link = $"https://localhost:7026/activation/activated/{token}";
-
+ 
             List<string> targetEmail = new List<string>();
 
             targetEmail.Add(user.Email);
 
 
-            var message = new Message(targetEmail, title, link);
+            var message = new Message(targetEmail, title, content);
 
             _emailService.Send(message);
+        }
+
+        public string GenerateUrl<T> (string controller , string action , T lastPath )
+        {
+            return $"https://localhost:7026/{controller}/{action}/{lastPath}";
         }
     }
 }
